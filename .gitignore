@@ -1,0 +1,7 @@
+.env
+.venv/
+__pycache__/
+logs/
+logs_bot_run.txt
+data/
+google-service-account*.json

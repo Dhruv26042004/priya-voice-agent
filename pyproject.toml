@@ -1,0 +1,15 @@
+[project]
+name = "voice-agent"
+version = "0.1.0"
+description = "AI voice receptionist for a dental clinic: English, Hindi and Hinglish, appointment booking, phone calls, post-call CRM and evaluations"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "google-api-python-client>=2.201.0",
+    "google-auth>=2.62.0",
+    "httpx>=0.28.1",
+    "pipecat-ai[cartesia,deepgram,groq,runner,silero,webrtc]>=1.14.0",
+    "python-dotenv>=1.2.4",
+    "sounddevice>=0.5.6",
+    "tzdata>=2026.6",
+]
