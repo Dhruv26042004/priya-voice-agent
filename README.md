@@ -79,6 +79,16 @@ Use headphones so the bot doesn't hear itself.
 A Docker Space on the free CPU tier (2 vCPU, 16 GB RAM) runs everything: the voice agent, the phone
 WebSocket, the CRM and the dashboard, at a public `https://<you>-<space>.hf.space` address.
 
+**One command:** create a free Hugging Face account, make an access token with **Write** permission
+(Settings → Access Tokens), add `HF_TOKEN=<token>` to `.env`, then run:
+```
+uv run --with huggingface_hub deploy_hf.py
+```
+It creates the Space, copies your keys from `.env` into its secrets, sets an `ADMIN_PASSWORD`
+(saved to `.env`), uploads the git-tracked files and waits until it's live.
+
+**Or by hand:**
+
 1. Create a free account at [huggingface.co](https://huggingface.co) and a **New Space**: SDK **Docker**,
    template **Blank**, hardware **CPU basic (free)**.
 2. In the Space's **Settings → Variables and secrets**, add as **secrets**: `DEEPGRAM_API_KEY`,
