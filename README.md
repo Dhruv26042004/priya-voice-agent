@@ -97,7 +97,7 @@ It creates the Space, copies your keys from `.env` into its secrets, sets an `AD
 3. Push this repository to the Space (create a write token under Settings → Access Tokens):
    ```
    git remote add space https://huggingface.co/spaces/<you>/<space>
-   git push space master:main
+   git push space main
    ```
    The Space builds the `Dockerfile` and starts in a few minutes.
 4. Talk to Priya over the phone path from your laptop:
