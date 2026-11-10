@@ -74,48 +74,33 @@ bot starts speaking before the full reply is written.
 
 Use headphones so the bot doesn't hear itself.
 
-## Deploy for free (Hugging Face Spaces)
+## Deploy
 
-A Docker Space on the free CPU tier (2 vCPU, 16 GB RAM) runs everything: the voice agent, the phone
-WebSocket, the CRM and the dashboard, at a public `https://<you>-<space>.hf.space` address.
+The project runs from your own computer: `uv run bot.py` serves the voice agent, the phone WebSocket,
+the CRM and the dashboard on port 7860. To take real phone calls from it, open a free Cloudflare tunnel
+(see **Phone calls** below).
 
-**One command:** create a free Hugging Face account, make an access token with **Write** permission
-(Settings → Access Tokens), add `HF_TOKEN=<token>` to `.env`, then run:
+**Docker:** the same container runs on any host that runs Docker containers and keeps WebSockets open:
+```
+docker build -t priya . && docker run -p 7860:7860 --env-file .env priya
+```
+It loads speech-detection models, so very small hosts (512 MB) may not be enough. Set `ADMIN_PASSWORD` to protect the
+CRM and dashboard (log in with any username and that password). The phone WebSocket at `/ws` is open to
+anyone who knows the address, and each call uses your API quota, so share the address carefully.
+
+**Hugging Face Spaces (needs a paid PRO account):** Hugging Face now hosts Docker Spaces only for PRO
+subscribers. With PRO, add `HF_TOKEN=<write token>` to `.env` and run:
 ```
 uv run --with huggingface_hub deploy_hf.py
 ```
-It creates the Space, copies your keys from `.env` into its secrets, sets an `ADMIN_PASSWORD`
-(saved to `.env`), uploads the git-tracked files and waits until it's live.
+It creates the Space, copies your keys from `.env` into its secrets, sets an `ADMIN_PASSWORD` (saved to
+`.env`), uploads the git-tracked files and waits until it's live. Then call it with
+`uv run phone_sim.py --url wss://<you>-<space>.hf.space/ws`.
 
-**Or by hand:**
-
-1. Create a free account at [huggingface.co](https://huggingface.co) and a **New Space**: SDK **Docker**,
-   template **Blank**, hardware **CPU basic (free)**.
-2. In the Space's **Settings → Variables and secrets**, add as **secrets**: `DEEPGRAM_API_KEY`,
-   `GROQ_API_KEY`, `CEREBRAS_API_KEY`, `CARTESIA_API_KEY`, `CARTESIA_VOICE_ID`, and `ADMIN_PASSWORD`
-   (protects the CRM and dashboard; log in with any username and this password).
-3. Push this repository to the Space (create a write token under Settings → Access Tokens):
-   ```
-   git remote add space https://huggingface.co/spaces/<you>/<space>
-   git push space main
-   ```
-   The Space builds the `Dockerfile` and starts in a few minutes.
-4. Talk to Priya over the phone path from your laptop:
-   ```
-   uv run phone_sim.py --url wss://<you>-<space>.hf.space/ws
-   ```
-   The dashboard is at `https://<you>-<space>.hf.space/dashboard`.
-
-Free-tier notes: the Space sleeps after 48 hours without visitors and wakes on the next visit; its
-disk is temporary, so calls and recordings reset when it restarts (fine for a demo, use a database
-for real use). The browser demo page needs a TURN server to carry audio from a hosted Space; the
-phone path above works without one. To enable it, get free TURN credentials (e.g. a free
-[Metered](https://www.metered.ca/tools/openrelay/) account) and add them as a secret:
+The browser demo page on a hosted server needs a TURN server to carry audio; the phone path works without
+one. To enable it, add TURN credentials (e.g. a free [Metered](https://www.metered.ca/tools/openrelay/)
+account) as a secret:
 `PIPECAT_ICE_SERVERS=[{"urls":"turn:<host>:443?transport=tcp","username":"<user>","credential":"<pass>"}]`.
-The phone WebSocket is open to anyone who knows the address, and each call uses your API quota,
-so share the address carefully.
-
-To run the same container anywhere else: `docker build -t priya . && docker run -p 7860:7860 --env-file .env priya`.
 
 ## Optional: Google Calendar
 

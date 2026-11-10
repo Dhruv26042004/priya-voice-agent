@@ -1,4 +1,4 @@
-"""Deploy to a Hugging Face Space (free CPU tier) in one command.
+"""Deploy to a Hugging Face Space in one command (Docker Spaces need a PRO account).
 
     uv run --with huggingface_hub deploy_hf.py
     uv run --with huggingface_hub deploy_hf.py --space my-clinic-bot
